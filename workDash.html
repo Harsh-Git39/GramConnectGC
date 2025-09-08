@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GramConnect - Worker Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+    <style>
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #6b7280;
+        }
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+        }
+        .empty-state h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        .empty-state p {
+            margin-bottom: 1.5rem;
+        }
+        .empty-state-small {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #6b7280;
+        }
+        .no-data {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 2rem;
+        }
+        .job-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: white;
+        }
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        .job-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .job-farmer {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .job-pay {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #059669;
+        }
+        .job-description {
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+        .job-details {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .job-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .job-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #059669;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #047857;
+        }
+        .btn-outline {
+            background: white;
+            color: #059669;
+            border: 1px solid #059669;
+        }
+        .btn-outline:hover {
+            background: #f0fdf4;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="dashboard-nav">
+            <div class="nav-left">
+                <div class="logo-icon">
+                    <i data-lucide="users"></i>
+                </div>
+                <h1 class="logo-text">GramConnect</h1>
+            </div>
+            <div class="nav-right">
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar">
+                        <i data-lucide="user"></i>
+                    </div>
+                    <div class="user-info">
+                        <p class="user-name" id="userName">Loading...</p>
+                        <p class="user-role">Worker</p>
+                    </div>
+                </div>
+                <button class="btn btn-ghost" onclick="logout()">
+                    <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <div class="dashboard-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-intro">
+                <h1 class="dashboard-title">Worker Dashboard</h1>
+                <p class="dashboard-subtitle">Find work opportunities and manage your agricultural career</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+                <button class="tab-btn" onclick="switchTab('jobs')">Find Jobs</button>
+                <button class="tab-btn" onclick="switchTab('bookings')">My Bookings</button>
+                <button class="tab-btn" onclick="switchTab('profile')">Profile</button>
+                <button class="tab-btn" onclick="switchTab('messages')">Messages</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overviewTab">
+                <!-- Stats Cards -->
+                <div class="stats-grid-4">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Earnings</span>
+                            <i data-lucide="dollar-sign" class="stat-icon"></i>
+                        </div>
+                        <div class="stat-value">₹0</div>
+                        <div class="stat-change">This season</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Jobs Completed</span>
+                            <i data-lucide="check-circle" class="stat-icon"></i>
+                        </div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-change">Start working to earn</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Rating</span>
+                            <i data-lucide="star" class="stat-icon"></i>
+                        </div>
+                        <div class="stat-value">0.0</div>
+                        <div class="stat-change">Build your reputation</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Available Jobs</span>
+                            <i data-lucide="briefcase" class="stat-icon"></i>
+                        </div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-change">In your area</div>
+                    </div>
+                </div>
+
+                <!-- Overview Content -->
+                <div class="overview-grid">
+                    <div class="overview-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Job Opportunities</h3>
+                            <p class="card-description">Latest jobs matching your skills</p>
+                        </div>
+                        <div class="card-content">
+                            <p class="no-data">No job opportunities available. Check back later!</p>
+                            <button class="btn btn-outline btn-full" onclick="switchTab('jobs')">Browse All Jobs</button>
+                        </div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Upcoming Bookings</h3>
+                            <p class="card-description">Your scheduled work</p>
+                        </div>
+                        <div class="card-content">
+                            <p class="no-data">No bookings yet. Apply for jobs to get started!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings Card -->
+                <div class="earnings-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Earnings This Month</h3>
+                        <p class="card-description">Your income breakdown</p>
+                    </div>
+                    <div class="earnings-stats">
+                        <div class="earning-stat">
+                            <div class="earning-value green">₹0</div>
+                            <div class="earning-label">This Month</div>
+                        </div>
+                        <div class="earning-stat">
+                            <div class="earning-value blue">₹0</div>
+                            <div class="earning-label">Avg/Day</div>
+                        </div>
+                        <div class="earning-stat">
+                            <div class="earning-value purple">0</div>
+                            <div class="earning-label">Days Worked</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Tab -->
+            <div class="tab-content" id="jobsTab">
+                <div class="jobs-layout">
+                    <!-- Filters Sidebar -->
+                    <div class="filters-sidebar">
+                        <div class="filters-header">
+                            <h3 class="filters-title">
+                                <i data-lucide="filter"></i>
+                                Filters
+                            </h3>
+                        </div>
+                        <div class="filters-content">
+                            <div class="filter-group">
+                                <label class="filter-label">Search Jobs</label>
+                                <input type="text" class="filter-input" placeholder="Search by title or description..." id="jobSearchInput">
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Skills Required</label>
+                                <div class="skills-checkboxes" id="skillsFilter">
+                                    <label><input type="checkbox" value="harvesting"> Harvesting</label>
+                                    <label><input type="checkbox" value="planting"> Planting</label>
+                                    <label><input type="checkbox" value="irrigation"> Irrigation</label>
+                                    <label><input type="checkbox" value="pest-control"> Pest Control</label>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Pay Range (₹/day)</label>
+                                <div class="pay-range">
+                                    <input type="range" id="payRangeMin" min="100" max="1000" value="200" class="range-input">
+                                    <input type="range" id="payRangeMax" min="100" max="1000" value="800" class="range-input">
+                                    <div class="range-labels">
+                                        <span id="payRangeMinLabel">₹200</span>
+                                        <span id="payRangeMaxLabel">₹800</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Jobs List -->
+                    <div class="jobs-main">
+                        <div class="section-header">
+                            <h2 class="section-title">Available Jobs</h2>
+                            <span class="badge" id="jobsFoundBadge">0 jobs found</span>
+                        </div>
+                        <div class="available-jobs" id="availableJobsList">
+                            <!-- Available jobs will be loaded dynamically here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings Tab -->
+            <div class="tab-content" id="bookingsTab">
+                <div class="section-header">
+                    <h2 class="section-title">My Bookings</h2>
+                    <div class="booking-badges">
+                        <span class="badge">0 upcoming</span>
+                        <span class="badge">0 completed</span>
+                    </div>
+                </div>
+                <div class="bookings-list" id="bookingsList">
+                    <!-- Bookings will be loaded dynamically here -->
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div class="tab-content" id="profileTab">
+                <div class="section-header">
+                    <h2 class="section-title">My Profile</h2>
+                    <button class="btn btn-primary" onclick="openEditProfileModal()">
+                        <i data-lucide="edit"></i>
+                        Edit Profile
+                    </button>
+                </div>
+
+                <div class="profile-layout">
+                    <div class="profile-main">
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <div class="profile-avatar">
+                                    <i data-lucide="user"></i>
+                                </div>
+                                <div class="profile-info">
+                                    <h3 class="profile-name" id="profileName">Loading...</h3>
+                                    <p class="profile-location" id="profileLocation">Location not set</p>
+                                    <div class="profile-rating">
+                                        <i data-lucide="star" class="star-icon"></i>
+                                        <span>0.0</span>
+                                        <span class="rating-count">(0 jobs)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile-content">
+                                <div class="profile-section">
+                                    <h4 class="section-heading">About</h4>
+                                    <p class="profile-bio" id="profileBio">Complete your profile to attract more job opportunities.</p>
+                                </div>
+                                <div class="profile-section">
+                                    <h4 class="section-heading">Skills</h4>
+                                    <div class="skills-tags" id="profileSkills">
+                                        <span class="skill-tag">Add your skills</span>
+                                    </div>
+                                </div>
+                                <div class="profile-grid">
+                                    <div class="profile-item">
+                                        <h4 class="item-label">Experience</h4>
+                                        <p class="item-value">Not specified</p>
+                                    </div>
+                                    <div class="profile-item">
+                                        <h4 class="item-label">Hourly Rate</h4>
+                                        <p class="item-value">₹0/hour</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-sidebar">
+                        <div class="stats-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Performance Stats</h3>
+                            </div>
+                            <div class="stats-list">
+                                <div class="stat-item">
+                                    <span class="stat-label">Rating</span>
+                                    <div class="stat-rating">
+                                        <i data-lucide="star" class="star-icon"></i>
+                                        <span>0.0</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Jobs Completed</span>
+                                    <span class="stat-value">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Total Earnings</span>
+                                    <span class="stat-value">₹0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Success Rate</span>
+                                    <span class="stat-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="availability-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Availability</h3>
+                            </div>
+                            <div class="availability-tags">
+                                <span class="availability-tag">Set your availability</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Tab -->
+            <div class="tab-content" id="messagesTab">
+                <div class="section-header">
+                    <h2 class="section-title">Messages</h2>
+                    <span class="badge">0 unread</span>
+                </div>
+
+                <div class="messages-layout">
+                    <div class="conversations-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">Conversations</h3>
+                        </div>
+                        <div class="conversations-list" id="workerConversationsList">
+                            <!-- Conversations will be loaded dynamically here -->
+                        </div>
+                    </div>
+
+                    <div class="chat-panel">
+                        <div class="chat-header">
+                            <h3 class="chat-title">Select a conversation</h3>
+                        </div>
+                        <div class="chat-messages" id="workerChatMessages">
+                            <!-- Messages will be loaded dynamically here -->
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-input" placeholder="Type your message..." id="workerMessageInput">
+                            <button class="btn btn-primary" onclick="sendWorkerMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="editProfileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Profile</h3>
+                <button class="modal-close" onclick="closeEditProfileModal()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form class="modal-form" onsubmit="handleEditProfile(event)">
+                <div class="form-group">
+                    <label for="editBio" class="form-label">Bio</label>
+                    <textarea id="editBio" class="form-textarea" placeholder="Tell farmers about your experience..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editHourlyRate" class="form-label">Hourly Rate (₹)</label>
+                    <input type="number" id="editHourlyRate" class="form-input" placeholder="200">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

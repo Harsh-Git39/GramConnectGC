@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GramConnect - Connecting Farmers with Daily Wage Workers</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo-icon">
+                    <i data-lucide="users"></i>
+                </div>
+                <h1 class="logo-text">GramConnect</h1>
+            </div>
+            <div class="nav-center">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#about" class="nav-link">About</a>
+            </div>
+            <div class="nav-right">
+                <button class="btn btn-primary" onclick="navigateToAuth()">Get Started</button>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i data-lucide="menu"></i>
+                </button>
+
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#features" class="mobile-nav-link">Features</a>
+            <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
+            <a href="#about" class="mobile-nav-link">About</a>
+            <button class="btn btn-primary mobile-get-started" onclick="navigateToAuth()">Get Started</button>
+        </div>
+    </nav>
+ <!-- Hero Section -->
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        Connecting <span class="text-green">Farmers</span> with Daily Wage <span class="text-green">Workers</span>
+                    </h1>
+                    <p class="hero-description">
+                        GramConnect bridges the gap between farming communities and agricultural workers, enabling efficient labor allocation based on skills, availability, and location.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-lg" onclick="navigateToAuth()">Join as Farmer</button>
+                        <button class="btn btn-outline btn-lg" onclick="navigateToAuth()">Join as Worker</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1700743625236-23f6121862e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYXJtaW5nJTIwYWdyaWN1bHR1cmUlMjB3b3JrZXJzfGVufDF8fHx8MTc1Njk2OTk5M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Agricultural workers in farming community" class="hero-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Platform Features</h2>
+                <p class="section-description">
+                    Everything you need to connect, communicate, and collaborate in the agricultural community
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Scheduling</h3>
+                    <p class="feature-description">
+                        Flexible time slot management with automated matching based on availability
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="message-circle"></i>
+                    </div>
+                    <h3 class="feature-title">Direct Communication</h3>
+                    <p class="feature-description">
+                        In-app calling, messaging, and video chat to coordinate work efficiently
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="credit-card"></i>
+                    </div>
+                    <h3 class="feature-title">Secure Payments</h3>
+                    <p class="feature-description">
+                        Safe and transparent payment processing with multiple payment options
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="star"></i>
+                    </div>
+                    <h3 class="feature-title">Rating & Reviews</h3>
+                    <p class="feature-description">
+                        Build trust through community feedback and transparent rating system
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="map-pin"></i>
+                    </div>
+                    <h3 class="feature-title">Location Matching</h3>
+                    <p class="feature-description">
+                        Find workers and jobs in your local area with GPS-based matching
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <h3 class="feature-title">Community Network</h3>
+                    <p class="feature-description">
+                        Connect with a trusted network of verified farmers and workers
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-description">Simple steps to get started on GramConnect</p>
+            </div>
+            <div class="how-it-works-content">
+                <div class="how-it-works-column">
+                    <h3 class="column-title">For Farmers</h3>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4 class="step-title">Create Your Profile</h4>
+                                <p class="step-description">Sign up and set up your farm details, location, and work requirements</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4 class="step-title">Post Job Requirements</h4>
+                                <p class="step-description">Describe your work needs, preferred skills, and time slots</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4 class="step-title">Connect & Hire</h4>
+                                <p class="step-description">Review worker profiles, communicate, and book the right workers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="how-it-works-column">
+                    <h3 class="column-title">For Workers</h3>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4 class="step-title">Build Your Profile</h4>
+                                <p class="step-description">Showcase your skills, experience, and availability</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4 class="step-title">Browse Opportunities</h4>
+                                <p class="step-description">Find jobs that match your skills and schedule in your area</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4 class="step-title">Work & Earn</h4>
+                                <p class="step-description">Complete jobs, receive payments, and build your reputation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2 class="cta-title">Ready to Transform Agricultural Labor?</h2>
+            <p class="cta-description">Join thousands of farmers and workers already using GramConnect</p>
+            <button class="btn btn-secondary btn-lg" onclick="navigateToAuth()">Get Started Today</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <div class="footer-logo-icon">
+                            <i data-lucide="users"></i>
+                        </div>
+                        <h3 class="footer-logo-text">GramConnect</h3>
+                    </div>
+                    <p class="footer-description">
+                        Connecting farming communities for better agricultural collaboration
+                    </p>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Platform</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">For Farmers</a></li>
+                        <li><a href="#" class="footer-link">For Workers</a></li>
+                        <li><a href="#" class="footer-link">Pricing</a></li>
+                        <li><a href="#" class="footer-link">Features</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">Help Center</a></li>
+                        <li><a href="#" class="footer-link">Contact Us</a></li>
+                        <li><a href="#" class="footer-link">Community</a></li>
+                        <li><a href="#" class="footer-link">Guidelines</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">About Us</a></li>
+                        <li><a href="#" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="#" class="footer-link">Terms of Service</a></li>
+                        <li><a href="#" class="footer-link">Blog</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 GramConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
