@@ -56,7 +56,8 @@ app.post('/api/signup', async (req, res) => {
                 name: profile.name,
                 email: profile.email,
                 type: profile.user_type,
-                location: profile.location
+                location: profile.location,
+                phone: profile.phone
             }
         });
         
@@ -95,7 +96,8 @@ app.post('/api/login', async (req, res) => {
                 name: profile.name,
                 email: profile.email,
                 type: profile.user_type,
-                location: profile.location
+                location: profile.location,
+                phone: profile.phone
             }
         });
         
@@ -149,7 +151,6 @@ app.get('/api/jobs', async (req, res) => {
     }
 });
 
-// CREATE JOB - Using raw insert values to avoid schema cache issues
 app.post('/api/jobs', async (req, res) => {
     try {
         const { title, description, skillsRequired, timeSlot, duration, payRate } = req.body;
@@ -233,6 +234,103 @@ app.post('/api/jobs', async (req, res) => {
     }
 });
 
+// === GET APPLICATIONS FOR FARMER ===
+app.get('/api/applications', async (req, res) => {
+    try {
+        const farmerId = req.headers['user-id'];
+        
+        if (!farmerId) {
+            return res.json({ success: false, error: 'Must be logged in' });
+        }
+        
+        console.log('Fetching applications for farmer:', farmerId);
+        
+        // Get all applications for jobs posted by this farmer
+        const { data: applications, error: applicationsError } = await supabase
+            .from('job_applications')
+            .select(`
+                *,
+                jobs!inner(farmer_id, title),
+                profiles!job_applications_worker_id_fkey(name, phone, location)
+            `)
+            .eq('jobs.farmer_id', farmerId)
+            .order('created_at', { ascending: false });
+        
+        if (applicationsError) {
+            console.error('Applications fetch error:', applicationsError);
+            return res.json({ success: false, error: applicationsError.message });
+        }
+        
+        // Format the applications data
+        const formattedApplications = applications.map(app => ({
+            id: app.id,
+            jobId: app.job_id,
+            workerId: app.worker_id,
+            workerName: app.profiles?.name || 'Unknown Worker',
+            workerPhone: app.profiles?.phone || '',
+            workerLocation: app.profiles?.location || 'Location not specified',
+            jobTitle: app.jobs?.title || 'Unknown Job',
+            experience: app.experience || '2+ years',
+            skills: app.skills || 'General farm work, harvesting, planting',
+            appliedAt: app.created_at,
+            status: app.status || 'pending'
+        }));
+        
+        console.log('Fetched applications:', formattedApplications.length);
+        res.json({ success: true, applications: formattedApplications });
+        
+    } catch (error) {
+        console.error('Server error fetching applications:', error);
+        res.json({ success: false, error: error.message });
+    }
+});
+
+// === UPDATE APPLICATION STATUS ===
+app.put('/api/applications/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const farmerId = req.headers['user-id'];
+        
+        if (!farmerId) {
+            return res.json({ success: false, error: 'Must be logged in' });
+        }
+        
+        // Verify the farmer owns the job this application is for
+        const { data: application, error: fetchError } = await supabase
+            .from('job_applications')
+            .select(`
+                *,
+                jobs!inner(farmer_id)
+            `)
+            .eq('id', id)
+            .eq('jobs.farmer_id', farmerId)
+            .single();
+        
+        if (fetchError || !application) {
+            return res.json({ success: false, error: 'Application not found or unauthorized' });
+        }
+        
+        // Update the application status
+        const { data: updatedApp, error: updateError } = await supabase
+            .from('job_applications')
+            .update({ status: status })
+            .eq('id', id)
+            .select()
+            .single();
+        
+        if (updateError) {
+            return res.json({ success: false, error: updateError.message });
+        }
+        
+        res.json({ success: true, application: updatedApp });
+        
+    } catch (error) {
+        console.error('Server error updating application:', error);
+        res.json({ success: false, error: error.message });
+    }
+});
+
 app.post('/api/apply', async (req, res) => {
     try {
         const { jobId } = req.body;
@@ -283,7 +381,6 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
     console.log(' Connected to Supabase database');
-   
 });
 
 module.exports = app;
