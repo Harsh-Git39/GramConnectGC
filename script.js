@@ -305,24 +305,101 @@ function contactWorker(phone) {
     }
 }
 
-function acceptApplication(appId) {
-    const app = applications.find(a => a.id === appId);
-    if (app) {
-        app.status = 'accepted';
-        alert(`Application from ${app.workerName} has been accepted!`);
-        // Close modal and refresh
-        document.querySelector('.modal')?.remove();
+// Replace the existing acceptApplication and rejectApplication functions with these:
+
+async function acceptApplication(appId) {
+    try {
+        const response = await fetch(`/api/applications/${appId}`, {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json',
+                'user-id': currentUser?.id
+            },
+            body: JSON.stringify({ status: 'accepted' })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Update local state
+            const app = applications.find(a => a.id === appId);
+            if (app) {
+                app.status = 'accepted';
+                alert(`Application from ${app.workerName} has been accepted!`);
+                // Close modal and refresh
+                document.querySelector('.modal')?.remove();
+                // Reload applications to show updated status
+                await loadJobApplications();
+            }
+        } else {
+            alert('Failed to accept application: ' + result.error);
+        }
+    } catch (error) {
+        alert('Error accepting application: ' + error.message);
     }
 }
 
-function rejectApplication(appId) {
-    if (confirm('Are you sure you want to reject this application?')) {
-        const app = applications.find(a => a.id === appId);
-        if (app) {
-            app.status = 'rejected';
-            alert(`Application from ${app.workerName} has been rejected.`);
-            document.querySelector('.modal')?.remove();
+async function rejectApplication(appId) {
+    if (!confirm('Are you sure you want to reject this application?')) return;
+    
+    try {
+        const response = await fetch(`/api/applications/${appId}`, {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json',
+                'user-id': currentUser?.id
+            },
+            body: JSON.stringify({ status: 'rejected' })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Update local state
+            const app = applications.find(a => a.id === appId);
+            if (app) {
+                app.status = 'rejected';
+                alert(`Application from ${app.workerName} has been rejected.`);
+                // Close modal and refresh
+                document.querySelector('.modal')?.remove();
+                // Reload applications to show updated status
+                await loadJobApplications();
+            }
+        } else {
+            alert('Failed to reject application: ' + result.error);
         }
+    } catch (error) {
+        alert('Error rejecting application: ' + error.message);
+    }
+}
+
+// Also update the loadJobsFromServer function to ensure applications are loaded:
+async function loadJobsFromServer() {
+    try {
+        const response = await fetch('/api/jobs');
+        const result = await response.json();
+        
+        if (result.success) {
+            jobs = result.jobs || [];
+            
+            // Load applications after jobs are loaded (only for farmers)
+            if (currentUser?.type === 'farmer') {
+                await loadJobApplications();
+            }
+            
+            // Update dashboard displays
+            if (currentUser?.type === 'farmer') {
+                loadFarmerJobs();
+                updateFarmerStats();
+            } else {
+                loadAvailableJobs();
+                updateWorkerStats();
+            }
+        }
+    } catch (error) {
+        console.error('Error loading jobs:', error);
+        jobs = [];
+        applications = [];
     }
 }
 
@@ -409,8 +486,31 @@ function loadAvailableWorkers() {
     }
 }
 
-function loadJobApplications() {
-    applications = [];
+// Replace the existing loadJobApplications function in script.js with this:
+
+async function loadJobApplications() {
+    if (!currentUser || currentUser.type !== 'farmer') return;
+    
+    try {
+        const response = await fetch('/api/applications', {
+            method: 'GET',
+            headers: { 
+                'user-id': currentUser.id
+            }
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            applications = result.applications || [];
+            console.log('Loaded applications:', applications);
+        } else {
+            console.error('Failed to load applications:', result.error);
+            applications = [];
+        }
+    } catch (error) {
+        console.error('Error loading applications:', error);
+        applications = [];
+    }
 }
 
 function logout() {
